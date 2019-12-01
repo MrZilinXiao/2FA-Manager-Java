@@ -1,0 +1,75 @@
+//        BorderPane pane = new BorderPane();  // BorderPane
+//
+//        HBox buttonBox = new HBox(); // 放置基本操作按钮
+//        Button importKeyBtn = new Button("导入密匙"); // 导入密匙
+//        Button exportKeyBtn = new Button("导出密匙"); // 导出密匙
+//        Button addKeyBtn = new Button("添加密匙"); // 添加单个密匙
+//        Button exitBtn = new Button("退出");  // 退出
+//
+//
+//        buttonBox.setPadding(new Insets(15,12,15,12));
+//        buttonBox.setSpacing(10);
+//        buttonBox.setStyle("-fx-background-color: #336699;");
+//        buttonBox.getChildren().addAll(importKeyBtn, exportKeyBtn, addKeyBtn, exitBtn);
+//        addKeyBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+//                    Stage addKeyStage = new Stage();
+//                    addKeyStage.setTitle("2FA Manager--添加密匙");
+//                    GridPane addKeyPane = new GridPane();
+//                    addKeyPane.setAlignment(Pos.CENTER);
+//                    addKeyPane.setHgap(10);
+//                    addKeyPane.setVgap(10);
+//                    addKeyPane.setPadding(new Insets(25,25,25,25));
+//                    Scene addKeyScene = new Scene(addKeyPane, 300, 275);
+//                    addKeyStage.setScene(addKeyScene);
+//
+//                    Text addKeyTitle = new Text("欢迎添加密匙：");
+//                    addKeyTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+//                    addKeyPane.add(addKeyTitle, 0, 0, 2, 1);
+//
+//                    Label userName = new Label("TOTP链接:");
+//                    addKeyPane.add(userName, 0, 1);
+//
+//                    TextField userTextField = new TextField();
+//                    addKeyPane.add(userTextField, 1, 1);
+//
+//                    Button submitBtn = new Button("添加");
+//                    HBox hbBtn = new HBox(10);
+//                    hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+//                    hbBtn.getChildren().add(submitBtn);
+//                    addKeyPane.add(hbBtn, 1, 4);
+//
+//                    addKeyStage.show();
+//                }
+//            }
+//        });
+//
+//        exitBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+//                    System.exit(0);
+//                }
+//            }
+//        });
+//
+//        VBox keyBox = new VBox();
+//        keyBox.setPadding(new Insets(10));
+//        keyBox.setSpacing(8);
+//        Text keyBoxTitle = new Text("已添加的密匙");
+//        keyBoxTitle.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+//        ObservableList<keyAppended> keyList = FXCollections.observableArrayList();
+//        ListView<keyAppended> keyListView = new ListView<>(keyList);
+//        keyListView.setItems(keyList);
+//        keyListView.setPrefSize(800,400);
+//        keyList.add(new keyAppended("123", "PLACEHOLDER", "ABCD"));
+//        keyBox.getChildren().addAll(keyBoxTitle, keyListView);
+//
+//        primaryStage.setTitle("2FA Manager");
+//        pane.setTop(buttonBox);
+//        pane.setCenter(keyBox);
+//
+//        primaryStage.setScene(new Scene(pane, 1000, 400));
+//        primaryStage.show();

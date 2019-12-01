@@ -1,4 +1,4 @@
-package sample;
+package TwoFactorManager;
 
 public class Controller {
 
