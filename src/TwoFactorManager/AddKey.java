@@ -29,7 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AddKey {
-    Stage addKeyStage = new Stage();
     String itemName = "";
     String secretKey = "";
     String totpURL = "";
@@ -38,14 +37,14 @@ public class AddKey {
 
     TextField dynPassField = new TextField();
     TextField nameTextField = new TextField();
-    Label keyTip = new Label("Debug");
+    Label keyTip = new Label("");
     Thread t = null;
 
     private boolean addKeyToDB(){
         Statement st = Main.statement;
         assert !itemName.equals("") && !secretKey.equals("");
         try{
-            st.executeUpdate("INSERT INTO `keys` (name, `key`) VALUES ('" + this.itemName + "','" + this.secretKey + "')");
+            st.executeUpdate("INSERT INTO `keys` (`name`, `key`) VALUES ('" + this.itemName + "','" + this.secretKey + "')");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,15 +72,20 @@ public class AddKey {
         Scene addKeyScene = new Scene(addKeyPane, 450, 275);
 
         addKeyStage.setScene(addKeyScene);
-        Text addKeyTitle = new Text("欢迎添加密匙");
+        Text addKeyTitle = new Text("欢迎添加秘钥");
         addKeyTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         addKeyPane.add(addKeyTitle, 0, 0, 2, 1);
-        Label userName = new Label("TOTP链接/密匙:");
+        Label userName = new Label("秘钥:");
         TextField secretField = new TextField();
-        secretField.setPromptText("链接/密匙均可");
+        secretField.setPromptText("链接/秘钥均可");
         addKeyPane.add(userName, 0, 1);
         addKeyPane.add(secretField, 1, 1);
         addKeyPane.add(keyTip, 2, 1);
+
+        secretField.setPrefWidth(400);
+        nameTextField.setPrefWidth(400);
+        dynPassField.setPrefWidth(400);
+        keyTip.setPrefWidth(300);
 
 
         Label secretName = new Label("名称:");
@@ -93,7 +97,7 @@ public class AddKey {
 
         addKeyPane.add(dynLabel, 0, 3);
         addKeyPane.add(dynPassField, 1, 3);
-        addKeyPane.add(p, 2,3);
+        addKeyPane.add(p, 1,4);
 
         dynPassField.setPromptText("输入链接/密匙后，此项会开始更新");
         dynPassField.setDisable(true);
@@ -109,7 +113,6 @@ public class AddKey {
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 1) {
                     addKeyToDB();
-
                     addKeyStage.close();
                 }
             }
@@ -135,6 +138,7 @@ public class AddKey {
                         }
                     }else{                              // a secret key provided
                         secretKey = t1;
+                        itemName = nameTextField.getText();
                     }
                     try {
                         refreshCode();

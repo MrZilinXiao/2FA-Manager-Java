@@ -9,10 +9,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -47,20 +50,30 @@ public class Main extends Application {
     // private
     @Override
     public void init(){
-        firstColumn = new TableColumn<>("序号"); //创建一个表格列
-        firstColumn.setMinWidth(50);//设置列的最小宽度
-        firstColumn.setCellValueFactory(new PropertyValueFactory<>("num"));//设置该列取值对应的属性名称。此处序号列要展示Key的num属性值
-
-        secondColumn = new TableColumn<>("名称");
-        secondColumn.setMinWidth(150);
-        secondColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        thirdColumn = new TableColumn<>("动态密码");
-        thirdColumn.setMinWidth(50);
-        thirdColumn.setCellValueFactory(new PropertyValueFactory<>("dynPassWord"));
+        firstColumn = getColumn("序号", "num", 50, 50); //设置该列取值对应的属性名称。此处序号列要展示Key的num属性值
+        secondColumn = getColumn("名称", "name", 150, 150);
+        thirdColumn = getColumn("动态密码", "dynPassWord", 100,100);
 
         initSQL();
         currList = initKeys();
+        ObservableList<Key> obList = FXCollections.observableArrayList(currList); //把清单对象转换成Javafx控件能够识别的数据对象
+        tableView = new TableView<Key>(obList); //依据指定数据创建表格视图
+        tableView.setRowFactory(keyTableView -> {
+            TableRow<Key> row = new TableRow<>();
+            row.setOnMouseClicked(mouseEvent -> {
+                if(mouseEvent.getClickCount() == 2 && (!row.isEmpty())){
+                    Key rowData = row.getItem();
+                    EditKey e = new EditKey(rowData.getNum());
+                    Stage editKeyStage = e.EditKey();
+                    editKeyStage.show();
+                    editKeyStage.setOnHiding(windowEvent->{
+                        System.out.println("Editing complete");
+                        refreshKeys();
+                    });
+                }
+            });
+            return row;
+        });
     }
 
     private void initSQL(){
@@ -120,7 +133,8 @@ public class Main extends Application {
 	        AddKey addKeyWindow = new AddKey();
 	        Stage addKeyStage = addKeyWindow.addKey();
 	        addKeyStage.show();
-	        addKeyStage.setOnCloseRequest(windowEvent -> {
+	        addKeyStage.setOnHiding(windowEvent -> {
+	            System.out.println("Adding Complete");
 	            refreshKeys();  // refresh TableView when finishing adding
             });
 	    });//addWindow是添加密匙的类
@@ -138,6 +152,7 @@ public class Main extends Application {
         pane.add(pBox, 0,2);
 
         pTime.setProgress(0);
+        pTime.setPrefWidth(400);
 
         Task pWorker = createWorker();  // 进度条线程
         pTime.progressProperty().unbind();
@@ -145,8 +160,7 @@ public class Main extends Application {
 
         new Thread(pWorker).start();
 
-        ObservableList<Key> obList = FXCollections.observableArrayList(currList); //把清单对象转换成Javafx控件能够识别的数据对象
-        tableView = new TableView<Key>(obList); //依据指定数据创建表格视图
+
 
         tableView.setPrefSize(400, 210);//设置表格视图的推荐宽高
 
@@ -189,6 +203,16 @@ public class Main extends Application {
             }
         };
     }
+
+    private TableColumn<Key, String> getColumn(String columnName, String propertyName, int width, int maxWidth) {
+        TableColumn<Key, String> tableColumn = new TableColumn<>(columnName);
+        tableColumn.setCellValueFactory(new PropertyValueFactory<>(propertyName));
+        tableColumn.setMinWidth(width);
+        tableColumn.setPrefWidth(width);
+        tableColumn.setMaxWidth(maxWidth);
+        return tableColumn;
+    }
+
 
 
     public static void main(String[] args) {
