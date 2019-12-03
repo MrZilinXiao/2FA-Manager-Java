@@ -166,8 +166,7 @@ public class AddKey {
     }
 
     private void refreshCode() throws InvalidKeyException, NoSuchAlgorithmException {
-        int dynPasswordInt = KeyGen.verify_code(secretKey, (new Date().getTime() / 1000L) / 30L);
-        String dynPassWord = Integer.toString(dynPasswordInt);
+        String dynPassWord = KeyGen.genCode(secretKey);
         dynPassField.setText("");
         dynPassField.setText(dynPassWord);
     }

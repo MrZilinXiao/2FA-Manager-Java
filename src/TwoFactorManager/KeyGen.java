@@ -21,6 +21,13 @@ public class KeyGen {
         }
     }
 
+    public static String genCode(String key) throws InvalidKeyException, NoSuchAlgorithmException {
+        int dynPasswordInt = KeyGen.verify_code(key, (new Date().getTime() / 1000L) / 30L);
+        String dynPassWord = Integer.toString(dynPasswordInt);
+        while(dynPassWord.length() < 6) dynPassWord = "0" + dynPassWord;
+        return dynPassWord;
+    }
+
     public boolean check_code(String secret, long code, long timeMsec) {
         // convert unix msec time into a 30 second "window"
         // this is per the TOTP spec (see the RFC for details)

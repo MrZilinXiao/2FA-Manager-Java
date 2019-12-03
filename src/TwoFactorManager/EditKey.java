@@ -53,8 +53,7 @@ public class EditKey {
             t.start();
 
 
-            int dynPasswordInt = KeyGen.verify_code(secretKey, (new Date().getTime() / 1000L) / 30L);
-            dynPassField.setText(Integer.toString(dynPasswordInt));
+            dynPassField.setText(KeyGen.genCode(secretKey));
 
         } catch (SQLException | InvalidKeyException | NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -142,8 +141,7 @@ public class EditKey {
     }
 
     private void refreshCode() throws InvalidKeyException, NoSuchAlgorithmException {
-        int dynPasswordInt = KeyGen.verify_code(secretKey, (new Date().getTime() / 1000L) / 30L);
-        String dynPassWord = Integer.toString(dynPasswordInt);
+        String dynPassWord = KeyGen.genCode(secretKey);
         dynPassField.setText("");
         dynPassField.setText(dynPassWord);
     }

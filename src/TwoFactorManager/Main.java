@@ -9,13 +9,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -92,8 +89,7 @@ public class Main extends Application {
         try{
             rs = statement.executeQuery("SELECT * FROM keys");
             while(rs.next()){
-                int dynPasswordInt = KeyGen.verify_code(rs.getString("key"), (new Date().getTime() / 1000L) / 30L);
-                String dynPassWord = Integer.toString(dynPasswordInt);
+                String dynPassWord = KeyGen.genCode(rs.getString("key"));
                 tmp.add(new Key(rs.getString("id"), rs.getString("name"), dynPassWord));
                 System.out.println("Item " + rs.getString("id") + " with current Code " + dynPassWord);
             }
