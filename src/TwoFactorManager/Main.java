@@ -48,8 +48,8 @@ public class Main extends Application {
     @Override
     public void init(){
         firstColumn = getColumn("序号", "num", 50, 50); //设置该列取值对应的属性名称。此处序号列要展示Key的num属性值
-        secondColumn = getColumn("名称", "name", 150, 150);
-        thirdColumn = getColumn("动态密码", "dynPassWord", 100,100);
+        secondColumn = getColumn("名称", "name", 180, 180);
+        thirdColumn = getColumn("动态密码", "dynPassWord", 180,180);
 
         initSQL();
         currList = initKeys();
@@ -109,7 +109,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         GridPane pane = new GridPane();
         pane.setAlignment(Pos.TOP_LEFT);
         pane.setPadding(new Insets(10));
@@ -120,22 +120,28 @@ public class Main extends Application {
         Button addBtn = new Button("添加密匙");
         Button exitBtn = new Button("退出");
         optionBox.setPadding(new Insets(15, 12, 15, 12));
-        optionBox.setStyle("-fx-background-color: #6699FF;");
+//        optionBox.setStyle("-fx-background-color: rgb(118,120,101);");
+//        addBtn.setStyle("-fx-background-color: #fdb047;");
+//        exitBtn.setStyle("-fx-background-color: #fdb047;");
+
+        Scene scene = new Scene(pane, 410, 350);
+        scene.getStylesheets().add(getClass().getResource("Pic.css").toExternalForm());
+
         optionBox.getChildren().addAll(addBtn, exitBtn);
         optionBox.setSpacing(10);
         optionBox.setAlignment(Pos.CENTER_LEFT);
 
-	    addBtn.setOnAction(e->{
-	        AddKey addKeyWindow = new AddKey();
-	        Stage addKeyStage = addKeyWindow.addKey();
-	        addKeyStage.show();
-	        addKeyStage.setOnHiding(windowEvent -> {
-	            System.out.println("Adding Complete");
-	            refreshKeys();  // refresh TableView when finishing adding
+        addBtn.setOnAction(e -> {
+            AddKey addKeyWindow = new AddKey();
+            Stage addKeyStage = addKeyWindow.addKey();
+            addKeyStage.show();
+            addKeyStage.setOnHiding(windowEvent -> {
+                System.out.println("Adding Complete");
+                refreshKeys();  // refresh TableView when finishing adding
             });
-	    });//addWindow是添加密匙的类
+        });//addWindow是添加密匙的类
 
-        exitBtn.setOnAction(e->{
+        exitBtn.setOnAction(e -> {
             System.exit(0);
         });
 
@@ -145,7 +151,7 @@ public class Main extends Application {
         VBox pBox = new VBox();
 
         pBox.getChildren().add(pTime);
-        pane.add(pBox, 0,2);
+        pane.add(pBox, 0, 2);
 
         pTime.setProgress(0);
         pTime.setPrefWidth(400);
@@ -157,13 +163,12 @@ public class Main extends Application {
         new Thread(pWorker).start();
 
 
-
         tableView.setPrefSize(400, 210);//设置表格视图的推荐宽高
 
         tableView.getColumns().addAll(firstColumn, secondColumn, thirdColumn);//将标题列加到表格视图
         //选中找不到右键是啥就写双击了
-        tableView.setOnMouseClicked(e->{
-            if(e.getClickCount() == 2) {
+        tableView.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
 		    			/*menuWindow menu = new menuWindow();
 		    			menu.start();*/
                 //menu界面
@@ -178,7 +183,7 @@ public class Main extends Application {
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("2FA Manager");
-        primaryStage.setScene(new Scene(pane, 410, 350));
+        primaryStage.setScene(scene);
         primaryStage.show();
 
 

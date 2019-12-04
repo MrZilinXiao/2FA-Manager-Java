@@ -66,11 +66,11 @@ public class AddKey {
         addKeyStage.setTitle("2FA Manager--添加密匙");
         GridPane addKeyPane = new GridPane();
         addKeyPane.setAlignment(Pos.CENTER);
-        addKeyPane.setHgap(10);
-        addKeyPane.setVgap(10);
-        addKeyPane.setPadding(new Insets(25,25,25,25));
-        Scene addKeyScene = new Scene(addKeyPane, 450, 275);
-
+        addKeyPane.setHgap(5.5);
+        addKeyPane.setVgap(5.5);
+        addKeyPane.setPadding(new Insets(11.5,12.5,13.5,14.5));
+        Scene addKeyScene = new Scene(addKeyPane, 400, 200);
+        addKeyScene.getStylesheets().add(getClass().getResource("Pic.css").toExternalForm());
         addKeyStage.setScene(addKeyScene);
         Text addKeyTitle = new Text("欢迎添加秘钥");
         addKeyTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -91,7 +91,7 @@ public class AddKey {
         Label secretName = new Label("名称:");
 
         nameTextField.setPromptText("输入链接时，此项会自动填充");
-        addKeyPane.add(secretName, 0, 2);
+        addKeyPane.add(secretName,0, 2);
         addKeyPane.add(nameTextField, 1, 2);
         Label dynLabel = new Label("动态密码:");
 

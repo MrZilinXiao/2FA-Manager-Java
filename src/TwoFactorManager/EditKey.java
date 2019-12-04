@@ -89,7 +89,7 @@ public class EditKey {
         editKeyPane.setVgap(10);
         editKeyPane.setPadding(new Insets(25,25,25,25));
         Scene editKeyScene = new Scene(editKeyPane, 450, 275);
-
+        editKeyScene.getStylesheets().add(getClass().getResource("Pic.css").toExternalForm());
         Label idLabel = new Label("序号:");
         idField.setDisable(true);
         editKeyPane.add(idLabel, 0, 0);
