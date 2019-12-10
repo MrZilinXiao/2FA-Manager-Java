@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,9 +37,9 @@ public class Main extends Application {
     private TableColumn<Key, String> firstColumn = null;
     private TableColumn<Key, String> secondColumn = null;
     private TableColumn<Key, String> thirdColumn = null;
+
     private TableView<Key> tableView = null;
     public static ProgressBar pTime = new ProgressBar();
-
 
     static long getTimeIndex(){
         return (System.currentTimeMillis() / 1000) % 31;
@@ -58,8 +59,9 @@ public class Main extends Application {
         tableView.setRowFactory(keyTableView -> {
             TableRow<Key> row = new TableRow<>();
             row.setOnMouseClicked(mouseEvent -> {
-                if(mouseEvent.getClickCount() == 2 && (!row.isEmpty())){
-                    Key rowData = row.getItem();
+                MouseButton button = mouseEvent.getButton();
+                Key rowData = row.getItem();
+                if(mouseEvent.getClickCount() == 2 && (!row.isEmpty())){ // 左键双击编辑
                     EditKey e = new EditKey(rowData.getNum());
                     Stage editKeyStage = e.EditKey();
                     editKeyStage.show();
@@ -68,6 +70,10 @@ public class Main extends Application {
                         refreshKeys();
                     });
                 }
+                if(mouseEvent.getButton() == MouseButton.SECONDARY){ // 右键弹出菜单
+                    GlobalMenu.getInstance(rowData.getNum()).show(row, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+                }
+
             });
             return row;
         });
@@ -120,9 +126,6 @@ public class Main extends Application {
         Button addBtn = new Button("添加密匙");
         Button exitBtn = new Button("退出");
         optionBox.setPadding(new Insets(15, 12, 15, 12));
-//        optionBox.setStyle("-fx-background-color: rgb(118,120,101);");
-//        addBtn.setStyle("-fx-background-color: #fdb047;");
-//        exitBtn.setStyle("-fx-background-color: #fdb047;");
 
         Scene scene = new Scene(pane, 410, 350);
         scene.getStylesheets().add(getClass().getResource("Pic.css").toExternalForm());
@@ -167,14 +170,6 @@ public class Main extends Application {
 
         tableView.getColumns().addAll(firstColumn, secondColumn, thirdColumn);//将标题列加到表格视图
         //选中找不到右键是啥就写双击了
-        tableView.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-		    			/*menuWindow menu = new menuWindow();
-		    			menu.start();*/
-                //menu界面
-                System.out.println("yyy");
-            }
-        });
 
 
         vbox.getChildren().add(tableView);//把表格加到垂直箱子
@@ -197,6 +192,7 @@ public class Main extends Application {
                     for (long i = getTimeIndex();
                          i <= timeGap; i = getTimeIndex()) {
                         updateProgress((1.0 * i) / timeGap, 1);
+                        // refreshKeys();
                         Thread.sleep(pauseTime);
                         if(i == timeGap) refreshKeys();
                     }

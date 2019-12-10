@@ -68,7 +68,6 @@ public class EditKey {
             e.printStackTrace();
         }
     }
-
     private void delRecord(){
         Statement st = Main.statement;
         try{

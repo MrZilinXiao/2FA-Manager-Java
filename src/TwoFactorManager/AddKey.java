@@ -62,7 +62,6 @@ public class AddKey {
         Stage addKeyStage = new Stage();
         addKeyStage.setResizable(false);
 
-
         addKeyStage.setTitle("2FA Manager--添加密匙");
         GridPane addKeyPane = new GridPane();
         addKeyPane.setAlignment(Pos.CENTER);
