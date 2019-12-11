@@ -27,17 +27,17 @@ public class Main extends Application {
     // SQL Related
     public static Database SQLWrapper = null;
 
-    private List<Key> currList = null;
+    private static List<Key> currList = null;
 
     // Some refreshable items
     private TableColumn<Key, String> firstColumn = null;
     private TableColumn<Key, String> secondColumn = null;
     private TableColumn<Key, String> thirdColumn = null;
 
-    private TableView<Key> tableView = null;
+    private static TableView<Key> tableView = null;
     public static ProgressBar pTime = new ProgressBar();
 
-    static long getTimeIndex(){
+    public static long getTimeIndex(){
         long currSecs = System.currentTimeMillis() / 1000;
         System.out.println(currSecs);
         return currSecs % 30;
@@ -80,7 +80,7 @@ public class Main extends Application {
         SQLWrapper = Database.getInstance();
     }
 
-    private List<Key> initKeys(){
+    private static List<Key> initKeys(){
         List<Key> tmp = new java.util.ArrayList<>(Collections.emptyList());
         try{
             Database.execQuery("SELECT * FROM keys");
@@ -95,7 +95,7 @@ public class Main extends Application {
         return tmp;
     }
 
-    private void refreshKeys(){
+    public static void refreshKeys(){
         currList = initKeys();
         tableView.setItems(FXCollections.observableArrayList(currList));
         System.out.println("Keys refreshed!");
