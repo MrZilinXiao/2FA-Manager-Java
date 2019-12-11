@@ -24,11 +24,8 @@ import java.util.List;
 public class Main extends Application {
     public static final int pauseTime = 1000; // milliseconds
     public static final int timeGap = 29; // in second
-
     // SQL Related
-    private static Connection conn = null;
-    public static ResultSet rs = null;
-    public static Statement statement = null;
+    public static Database SQLWrapper = null;
 
     private List<Key> currList = null;
 
@@ -46,7 +43,6 @@ public class Main extends Application {
         return currSecs % 30;
     }
 
-    // private
     @Override
     public void init(){
         firstColumn = getColumn("序号", "num", 50, 50); //设置该列取值对应的属性名称。此处序号列要展示Key的num属性值
@@ -81,29 +77,19 @@ public class Main extends Application {
     }
 
     private void initSQL(){
-        try {
-            Class.forName("org.sqlite.JDBC");
-            conn = DriverManager.getConnection("jdbc:sqlite:./code.db");
-            statement = conn.createStatement();
-        }catch (ClassNotFoundException | SQLException ex){
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }
+        SQLWrapper = Database.getInstance();
     }
 
     private List<Key> initKeys(){
         List<Key> tmp = new java.util.ArrayList<>(Collections.emptyList());
         try{
-            rs = statement.executeQuery("SELECT * FROM keys");
-            while(rs.next()){
-                String dynPassWord = KeyGen.genCode(rs.getString("key"));
-                tmp.add(new Key(rs.getString("id"), rs.getString("name"), dynPassWord));
-                System.out.println("Item " + rs.getString("id") + " with current Code " + dynPassWord);
+            Database.execQuery("SELECT * FROM keys");
+            while(Database.getRs().next()){
+                String dynPassWord = KeyGen.genCode(Database.getRs().getString("key"));
+                tmp.add(new Key(Database.getRs().getString("id"), Database.getRs().getString("name"), dynPassWord));
+                System.out.println("Item " + Database.getRs().getString("id") + " with current Code " + dynPassWord);
             }
-        }catch (SQLException ex){
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }catch (NoSuchAlgorithmException | InvalidKeyException e) {
+        }catch (NoSuchAlgorithmException | InvalidKeyException | SQLException e) {
             e.printStackTrace();
         }
         return tmp;
@@ -172,11 +158,8 @@ public class Main extends Application {
         tableView.getColumns().addAll(firstColumn, secondColumn, thirdColumn);//将标题列加到表格视图
         //选中找不到右键是啥就写双击了
 
-
         vbox.getChildren().add(tableView);//把表格加到垂直箱子
-
         pane.add(vbox, 0, 1);
-
         primaryStage.setResizable(false);
         primaryStage.setTitle("2FA Manager");
         primaryStage.setScene(scene);

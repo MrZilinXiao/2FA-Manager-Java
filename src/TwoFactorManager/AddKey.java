@@ -41,13 +41,8 @@ public class AddKey {
     Thread t = null;
 
     private boolean addKeyToDB(){
-        Statement st = Main.statement;
         assert !itemName.equals("") && !secretKey.equals("");
-        try{
-            st.executeUpdate("INSERT INTO `keys` (`name`, `key`) VALUES ('" + this.itemName + "','" + this.secretKey + "')");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Database.execQuery("INSERT INTO `keys` (`name`, `key`) VALUES ('" + this.itemName + "','" + this.secretKey + "')");
         return true;
     }
 
@@ -99,7 +94,7 @@ public class AddKey {
         addKeyPane.add(p, 1,4);
 
         dynPassField.setPromptText("输入链接/密匙后，此项会开始更新");
-        dynPassField.setDisable(true);
+        dynPassField.setEditable(false);
 
         Button submitBtn = new Button("添加");
         submitBtn.setDisable(true);

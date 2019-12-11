@@ -7,24 +7,20 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import javax.naming.ldap.LdapName;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.util.Date;
 import java.util.Optional;
 
 public class EditKey {
     String keyNum = "";
     String secretKey = "";
-    // Time addTime = null;
 
     TextField idField = new TextField();
     TextField nameTextField = new TextField();
@@ -36,14 +32,12 @@ public class EditKey {
 
     EditKey(String keyNum){
         this.keyNum = keyNum;
-        Statement st = Main.statement;
-        ResultSet rs = Main.rs;
         assert !keyNum.equals("");
         try{
-            st.executeQuery("SELECT * FROM keys WHERE id = " + keyNum);
+            Database.execQuery("SELECT * FROM keys WHERE id = " + keyNum);
             idField.setText(keyNum);
-            nameTextField.setText(rs.getString("name"));
-            secretKey = rs.getString("key");
+            nameTextField.setText(Database.getRs().getString("name"));
+            secretKey = Database.getRs().getString("key");
             // addTime = rs.getTime("addTime");
 
             Task pWorker = createWorker();  // 进度条线程
@@ -51,7 +45,6 @@ public class EditKey {
             p.progressProperty().bind(pWorker.progressProperty());
             t = new Thread(pWorker);
             t.start();
-
 
             dynPassField.setText(KeyGen.genCode(secretKey));
 
@@ -61,20 +54,10 @@ public class EditKey {
     }
 
     private void updateDB(String newName){
-        Statement st = Main.statement;
-        try{
-            st.executeQuery("UPDATE `keys` SET name = '" + newName +"' WHERE id = " + keyNum);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Database.execQuery("UPDATE `keys` SET name = '" + newName +"' WHERE id = " + keyNum);
     }
     private void delRecord(){
-        Statement st = Main.statement;
-        try{
-            st.executeQuery(String.format("DELETE FROM `keys` WHERE id = %s", keyNum));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Database.execQuery(String.format("DELETE FROM `keys` WHERE id = %s", keyNum));
     }
 
     public Stage EditKey(){
@@ -87,10 +70,10 @@ public class EditKey {
         editKeyPane.setHgap(10);
         editKeyPane.setVgap(10);
         editKeyPane.setPadding(new Insets(25,25,25,25));
-        Scene editKeyScene = new Scene(editKeyPane, 450, 275);
+        Scene editKeyScene = new Scene(editKeyPane, 450, 475);
         editKeyScene.getStylesheets().add(getClass().getResource("Pic.css").toExternalForm());
         Label idLabel = new Label("序号:");
-        idField.setDisable(true);
+        idField.setEditable(false);
         editKeyPane.add(idLabel, 0, 0);
         editKeyPane.add(idField, 1, 0);
 
@@ -99,17 +82,27 @@ public class EditKey {
         editKeyPane.add(nameTextField, 1, 1);
 
         Label dynLabel = new Label("动态密码:");
-        dynPassField.setDisable(true);
+        dynPassField.setEditable(false);
         editKeyPane.add(dynLabel, 0,2);
         editKeyPane.add(dynPassField, 1, 2);
 
+        QRUtils.encodeQRCode("otpauth://totp/" + nameTextField.getText() +"?secret=" + secretKey);
+
+        Image image = new Image("file:./tmpQR.png");
+        ImageView imageView = new ImageView(image);
+        HBox imageBox = new HBox(imageView);
+        imageBox.setAlignment(Pos.CENTER);
+        Label QRLabel = new Label("需要转移？");
+        editKeyPane.add(QRLabel, 0, 3);
+        editKeyPane.add(imageBox, 1,3);
 
         HBox buttonBox = new HBox();
+        buttonBox.setSpacing(10);
         Button editBtn = new Button("编辑");
         Button delBtn = new Button("删除");
         buttonBox.getChildren().addAll(editBtn, delBtn);
-        editKeyPane.add(buttonBox, 1, 3);
-        editKeyPane.add(p, 0,3);
+        editKeyPane.add(buttonBox, 1, 4);
+        editKeyPane.add(p, 0,4);
 
         editBtn.setOnMouseClicked(e->{
             updateDB(nameTextField.getText());
