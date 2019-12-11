@@ -19,12 +19,11 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class Main extends Application {
     public static final int pauseTime = 1000; // milliseconds
-    public static final int timeGap = 30; // in second
+    public static final int timeGap = 29; // in second
 
     // SQL Related
     private static Connection conn = null;
@@ -42,7 +41,9 @@ public class Main extends Application {
     public static ProgressBar pTime = new ProgressBar();
 
     static long getTimeIndex(){
-        return (System.currentTimeMillis() / 1000) % 31;
+        long currSecs = System.currentTimeMillis() / 1000;
+        System.out.println(currSecs);
+        return currSecs % 30;
     }
 
     // private
@@ -102,7 +103,7 @@ public class Main extends Application {
         }catch (SQLException ex){
             System.out.println(ex.getMessage());
             ex.printStackTrace();
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+        }catch (NoSuchAlgorithmException | InvalidKeyException e) {
             e.printStackTrace();
         }
         return tmp;

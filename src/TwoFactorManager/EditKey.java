@@ -40,7 +40,7 @@ public class EditKey {
         ResultSet rs = Main.rs;
         assert !keyNum.equals("");
         try{
-            rs = st.executeQuery("SELECT * FROM keys WHERE id = " + keyNum);
+            st.executeQuery("SELECT * FROM keys WHERE id = " + keyNum);
             idField.setText(keyNum);
             nameTextField.setText(rs.getString("name"));
             secretKey = rs.getString("key");
