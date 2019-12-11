@@ -22,9 +22,6 @@ import javafx.stage.Stage;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -60,6 +60,10 @@ public class EditKey {
         Database.execQuery(String.format("DELETE FROM `keys` WHERE id = %s", keyNum));
     }
 
+    public static void delRecord(String keyNum){
+        Database.execQuery(String.format("DELETE FROM `keys` WHERE id = %s", keyNum));
+    }
+
     public Stage EditKey(){
         Stage editKeyStage = new Stage();
         editKeyStage.setResizable(false);
