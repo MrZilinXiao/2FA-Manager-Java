@@ -38,6 +38,7 @@ public class AddKey {
     Thread t = null;
 
     private boolean addKeyToDB(){
+        itemName = nameTextField.getText();
         assert !itemName.equals("") && !secretKey.equals("");
         Database.execQuery("INSERT INTO `keys` (`name`, `key`) VALUES ('" + this.itemName + "','" + this.secretKey + "')");
         return true;
@@ -160,6 +161,7 @@ public class AddKey {
         String dynPassWord = KeyGen.genCode(secretKey);
         dynPassField.setText("");
         dynPassField.setText(dynPassWord);
+
     }
 
     private Task createWorker(){

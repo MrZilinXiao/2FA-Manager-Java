@@ -5,6 +5,7 @@ import java.sql.*;
 /**
  * Database Related Operations Wrapper
  */
+
 public class Database {
     private static Database INSTANCE = null;
 
@@ -22,6 +23,12 @@ public class Database {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    protected void finalize() throws SQLException {
+        rs.close();
+        conn.close();
     }
 
     public static void execQuery(String query){

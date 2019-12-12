@@ -3,10 +3,6 @@
     -fx-background-image: url("../timg.jpeg");
 }
 
-/*.root {*/
-/*    -fx-background-image: url("../background.jpg");*/
-/*}*/
-
 .label {
     -fx-font-size: 12px;
     -fx-font-weight: bold;

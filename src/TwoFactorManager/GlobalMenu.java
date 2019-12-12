@@ -6,15 +6,34 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public class GlobalMenu extends ContextMenu {
     private static GlobalMenu INSTANCE = null;
+    private static String num = "";
 
-    private GlobalMenu(String num) {
+    private GlobalMenu() {
+        MenuItem copyMenuItem = new MenuItem("复制到剪贴板");
         MenuItem addMenuItem = new MenuItem("添加");
         MenuItem editMenuItem = new MenuItem("编辑");
         MenuItem delMenuItem = new MenuItem("删除");
+        copyMenuItem.setOnAction(e -> {
+            Database.execQuery("SELECT * FROM keys WHERE id = " + num);
+            try {
+                String secretKey = Database.getRs().getString("key");
+                setClipboardString(KeyGen.genCode(secretKey));
+            } catch (SQLException | NoSuchAlgorithmException | InvalidKeyException ex) {
+                ex.printStackTrace();
+            }
+
+        });
         addMenuItem.setOnAction(e -> {
             AddKey addKeyWindow = new AddKey();
             Stage addKeyStage = addKeyWindow.addKey();
@@ -41,7 +60,7 @@ public class GlobalMenu extends ContextMenu {
                 Main.refreshKeys();
             }
         });
-        getItems().addAll(addMenuItem, editMenuItem, delMenuItem);
+        getItems().addAll(copyMenuItem ,addMenuItem, editMenuItem, delMenuItem);
     }
 
     /**
@@ -51,8 +70,18 @@ public class GlobalMenu extends ContextMenu {
     public static GlobalMenu getInstance(String num)
     {
         if (INSTANCE == null) {
-            INSTANCE = new GlobalMenu(num);
+            INSTANCE = new GlobalMenu();
         }
+        GlobalMenu.num = num;
         return INSTANCE;
+    }
+
+    public static void setClipboardString(String text) {
+        // 获取系统剪贴板
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        // 封装文本内容
+        Transferable trans = new StringSelection(text);
+        // 把文本内容设置到系统剪贴板
+        clipboard.setContents(trans, null);
     }
 }
